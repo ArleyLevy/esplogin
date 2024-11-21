@@ -6,6 +6,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, U
 from flask_mysqldb import MySQL
 import paho.mqtt.client as mqtt
 import json
+import requests
 
 # Configuração de logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -42,7 +43,7 @@ class User(UserMixin):
         self.username = username
         self.password = password
         self.port = port
-
+        
 @login_manager.user_loader
 def load_user(user_id):
     cur = mysql.connection.cursor()
@@ -85,6 +86,7 @@ mqtt_client.on_message = on_message
 def inicio():
     return render_template('index.html')
 
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -95,8 +97,25 @@ def register():
         mqtt_password = request.form['mqtt_password']
         mqtt_port = int(request.form['mqtt_port'])
 
+        # API de validação de e-mail
+        API_KEY = '9e22da46e85c4bab9684168eb8acd81e'
+        API_URL = f"https://emailvalidation.abstractapi.com/v1/?api_key={API_KEY}&email={email}"
+
+        # Fazendo a requisição para a API
+        response = requests.get(API_URL)
+        if response.status_code == 200:  # Se a API respondeu com sucesso
+            data = response.json()  # Decodifica a resposta JSON
+            if not data.get('deliverability') == "DELIVERABLE":  # Verifica se o e-mail é válido
+                flash("O e-mail fornecido não é válido ou não pode ser entregue.", "danger")
+                return redirect(url_for('register'))
+        else:
+            flash("Erro ao validar o e-mail. Tente novamente mais tarde.", "danger")
+            return redirect(url_for('register'))
+
+        # Hash da senha
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
+        # Inserção no banco de dados
         cur = mysql.connection.cursor()
         try:
             cur.execute("""
