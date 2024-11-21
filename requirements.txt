@@ -53,10 +53,8 @@ pyinstaller==6.10.0
 pyinstaller-hooks-contrib==2024.8
 PyJWT==2.9.0
 pyparsing==3.1.4
-pypiwin32==223
 PySocks==1.7.1
 python-dateutil==2.9.0.post0
-pywin32==308
 pywin32-ctypes==0.2.3
 PyYAML==6.0.2
 requests==2.32.3
