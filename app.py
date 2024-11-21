@@ -81,6 +81,10 @@ def on_message(client, userdata, msg):
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
 
+@app.route('/')
+def inicio():
+    return render_template('index.html')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -155,7 +159,7 @@ def dashboard():
         mqtt_client.loop_start()
         mqtt_client._initialized = True
         logging.info(f"Cliente MQTT inicializado para o usuário: {current_user.email}")
-    return render_template('index.html', broker=current_user.broker)
+    return render_template('dashboard.html', broker=current_user.broker)
 
 @app.route('/update_led', methods=['POST'])
 @login_required
