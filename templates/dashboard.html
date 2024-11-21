@@ -18,15 +18,16 @@
         }
 
         .navbar {
-            background: #333;
-            color: #ffd700;
-            padding: 10px 0px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #333;
+            color: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             z-index: 1000;
         }
@@ -43,11 +44,20 @@
             border: none;
             color: #fff;
             z-index: 1100;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+    
+        .menu-button:hover {
+            color: #ffd700;
+            transform: translateX(5px);
+            transform: scale(1.2);
         }
 
         .navbar h1 {
             font-size: 16px;
             margin: 0;
+            margin-right: 30px;
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -59,7 +69,8 @@
             left: -400px;
             width: 300px;
             height: 100%;
-            background: #222;
+            background: #333;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
             padding: 70px 20px;
             transition: left 0.3s ease-in-out;
             z-index: 800;
@@ -72,19 +83,21 @@
 
         .sidebar button {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 12px;
+            margin-bottom: 10px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            background: #333;
-            color: #fff;
+            background: #555;
+            color: white;
             cursor: pointer;
-            transition: 0.2s ease;
+            transition: background 0.3s, transform 0.2s;
         }
 
         .sidebar button:hover {
-            background: #444;
+            background: #ffd700;
+            color: #4e54c8;
+            transform: translateX(5px);
         }
 
         .content {

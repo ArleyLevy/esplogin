@@ -6,107 +6,115 @@
     <title>Página Inicial</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/sJDXl0o.png">
     <style>
+        /* Corpo da página */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             height: 100vh;
             margin: 0;
             background: linear-gradient(135deg, #4e54c8, #8f94fb);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #fff;
         }
-        .meio{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+
+        /* Botão do menu */
         .menu-button {
-            position: fixed; /* Fixar no topo */
-            top: 9px; /* Ajuste para alinhar com o topo */
-            left: 20px; /* Distância da borda esquerda */
+            position: fixed;
+            top: 10px;
+            left: 20px;
             font-size: 24px;
             cursor: pointer;
             background: none;
             border: none;
             color: #fff;
-            z-index: 1100; /* Certificar que está acima de outros elementos */
-        }
-        
-        body, ul, li, a {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            text-decoration: none;
+            z-index: 1100;
+            transition: transform 0.3s, color 0.3s;
         }
 
+        .menu-button:hover {
+            color: #ffd700;
+            transform: scale(1.2);
+        }
+
+        /* Cabeçalho */
         .site-header {
-            position: fixed; /* Fixar no topo da página */
-            top: 0; /* Garantir que fique no topo */
-            left:0; /* Alinhar com o lado esquerdo */
-            width: 100%; /* Tornar a largura responsiva */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 54px; /* Altura fixa */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 7.5px 0px;
+            padding: -5px 20px; /* Apenas laterais */
+            background: #333;
             color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000; /* Garantir que fique acima de outros elementos */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
         }
 
-        .site-header .logo a {
-            padding: 10px 70px; /* Ajuste para valores menores */
-            font-size: 1.5rem;
-            color: white;
-            font-weight: bold;
+        .botao{
+            margin-top: 50px;
+        }
+
+        .site-header .logo a img {
+            height: 40px;
+            margin-left: 60px;
         }
 
         .site-header .logo1 a {
             font-size: 1.5rem;
-            color: white;
             font-weight: bold;
-            text-align: center;
-            margin-left: -70px; /* Move a logo para a direita */
-            margin-right: 0px; /* Move a logo para o centro */
+            margin-right: 10px;
+            color: white;
         }
 
+        /* Navegação */
         .navigation ul {
             display: flex;
             gap: 10px;
-            justify-content: center; /* Centraliza os itens dentro da navegação */
-            width: 100%;
-            padding-right: 50px; /* Adicione um espaçamento da borda esquerda */
+            margin-right: 10px;
+            z-index: 1000;
         }
 
         .navigation a {
             color: white;
-            padding: 8px 20px;
-            border-radius: 4px;
+            padding: 5px 5px;
+            border-radius: 5px;
             transition: background-color 0.3s ease;
+            font-weight: bold;
+            z-index: 1000;
         }
 
         .navigation a:hover {
-            background-color: rgb(202, 63, 63);
+            background-color: #ffd700;
+            color: #4e54c8;
         }
 
+        /* Responsividade */
         @media (max-width: 768px) {
-            .site-header {
-                flex-direction: column; /* Stack os elementos verticalmente */
-                align-items: flex-start; /* Alinhar itens ao início */
-            }
-            .site-header .navigation ul {
-                flex-direction: column; /* Deixar o menu vertical */
-                gap: 10px; /* Reduzir o espaçamento */
+            .navigation ul {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 10px 20px;
             }
         }
-        
+
+        /* Barra lateral */
         .sidebar {
             position: fixed;
-            top: 52px; /* Altura igual ao header */
+            top: 0px;
             left: -400px;
             width: 300px;
-            height: calc(100% - 70px); /* Evitar que sobreponha o footer */
-            background: #222;
+            height: calc(100%);
+            background: #333;
+            color: white;
             padding: 20px;
-            transition: left 0.3s ease-in-out;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            transition: left 0.4s ease;
             overflow-y: auto;
         }
 
@@ -115,28 +123,25 @@
         }
 
         .sidebar button {
-            display: flex; /* Garante que o conteúdo ocupe toda a largura */
-            justify-content: center; /* Centraliza o texto horizontalmente */
-            align-items: center; /* Centraliza o texto verticalmente */
-            width: 100%; /* Garante que o botão ocupe toda a largura disponível */
-            padding: 10px; /* Espaçamento interno consistente */
-            margin-bottom: 15px; /* Espaçamento entre os botões */
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            background: #333; /* Fundo padrão */
-            color: #fff;
+            background: #555;
+            color: white;
             cursor: pointer;
-            transition: 0.2s ease;
-            text-align: center; /* Centraliza o texto */
+            transition: background 0.3s, transform 0.2s;
         }
 
         .sidebar button:hover {
-            background: #555; /* Destaque no hover */
-            color: #8f94fb; /* Opcional: texto em destaque */
-            min-height: 5px; /* Ajuste conforme necessário */
+            background: #ffd700;
+            color: #4e54c8;
+            transform: translateX(5px);
         }
 
+        /* Rodapé */
         .footer {
             position: fixed;
             bottom: 0;
@@ -147,14 +152,15 @@
             padding: 10px;
         }
 
-        footer span {
+        .footer span {
             font-weight: bold;
             color: #ffd700;
         }
 
+        /* Mensagens Flash */
         .flash-container {
             position: fixed;
-            top: 50px;
+            top: 70px;
             right: 20px;
             z-index: 1100;
         }
@@ -169,39 +175,31 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transition: opacity 0.5s ease-in-out;
         }
-
-        .flash-success {
-            background: #4CAF50;
-        }
-
-        .flash-error {
-            background: #F44336;
-        }
     </style>
 </head>
 <body>
     <header class="site-header">
         <div class="logo">
-            <a>
-                <img src="https://i.imgur.com/c882vId.png" alt="Logo" style="height: 30px;"> <!-- Ajuste o tamanho da imagem conforme necessário -->
-            </a>
+            <a><img src="https://i.imgur.com/c882vId.png" alt="Logo"></a>
         </div>
         <div class="logo1">
-            <a>Controle de leds</a>
+            <a>Controle de LEDs</a>
         </div>
-        <nav class="navigation">
+        <div class="navigation">
             <ul>
-                <li><a href="/login">login</a></li>
+                <a button onclick="window.location.href='/login'">Login</a>
             </ul>
-        </nav>
+        </div>
     </header>
     <button class="menu-button" onclick="toggleMenu()">☰</button>
     <div class="sidebar" id="sidebar">
-        <button onclick="downloadFile('{{ url_for("static", filename="arquivos/esp_online.ino") }}')">📥 Código para o ESP32</button>
-        <button onclick="window.open('https://www.invertexto.com/broker', '_blank')">MQTT para testes</button>
+        <div class="botao">
+            <button onclick="downloadFile('{{ url_for("static", filename="arquivos/esp_online.ino") }}')">📥 Código para o ESP32</button> 
+            <button onclick="window.open('https://www.invertexto.com/broker', '_blank')">MQTT para Testes</button>
+        </div>
     </div>
     <div class="meio">
-        <h2>Olá, seja bem vindo!</h2>
+        <h2>Olá, seja bem-vindo!</h2>
     </div>
     <footer class="footer">
         Powered by <span>Arley™</span>
@@ -215,10 +213,8 @@
             link.click();
             document.body.removeChild(link);
         }
-
         function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
+            document.getElementById('sidebar').classList.toggle('active');
         }
     </script>
 </body>
