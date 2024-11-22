@@ -86,7 +86,6 @@ mqtt_client.on_message = on_message
 def inicio():
     return render_template('index.html')
 
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
