@@ -90,6 +90,10 @@ def inicio():
 def tutorial():
     return render_template('tutorial.html')
 
+@app.route('/<pagina>')
+def erro404(pagina):
+    return render_template('erro404.html',pagina=pagina)
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
