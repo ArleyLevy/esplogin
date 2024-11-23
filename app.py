@@ -8,6 +8,7 @@ import paho.mqtt.client as mqtt
 import json
 import requests
 
+
 # Configuração de logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -81,7 +82,7 @@ def on_message(client, userdata, msg):
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
-
+    
 @app.route('/')
 def inicio():
     return render_template('index.html')
@@ -131,6 +132,12 @@ def register():
             """, (email, hashed_password, broker, mqtt_user, mqtt_password, mqtt_port))
             mysql.connection.commit()
             logging.info(f"Novo usuário registrado: {email}")
+            
+            #função para confirmar cadastro no e-mail
+            mensagem = "Você se registrou, e já tá pronto para testar a Dashboard de Leds! Para qualquer dúvida acesse o /tutorial, valeu!"
+            from apimsg import enviar_email
+            enviar_email(email, mensagem)
+            
             flash("Registrado com sucesso!", "success")
             return redirect(url_for('login'))
         except Exception as e:
