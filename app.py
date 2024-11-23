@@ -82,7 +82,22 @@ def on_message(client, userdata, msg):
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
-    
+
+def configurar_mqtt():
+    global mqtt_client
+    if not mqtt_client._initialized:
+        try:
+            mqtt_client.tls_set()  # Configura conexão segura
+            mqtt_client.tls_insecure_set(True)  # Ignora a validação de certificado
+            mqtt_client.username_pw_set(current_user.username, current_user.password)
+            mqtt_client.connect(current_user.broker, int(current_user.port))
+            mqtt_client.loop_start()
+            mqtt_client._initialized = True
+            logging.info("Cliente MQTT configurado com sucesso!")
+        except Exception as e:
+            logging.error(f"Erro ao configurar o cliente MQTT: {e}")
+            raise
+
 @app.route('/')
 def inicio():
     return render_template('index.html')
@@ -93,7 +108,7 @@ def tutorial():
 
 @app.route('/<pagina>')
 def erro404(pagina):
-    return render_template('erro404.html',pagina=pagina)
+    return render_template('erro404.html', pagina=pagina)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -133,12 +148,15 @@ def register():
             mysql.connection.commit()
             logging.info(f"Novo usuário registrado: {email}")
             
-            #função para confirmar cadastro no e-mail
-            mensagem = "Você se registrou, e já tá pronto para testar a Dashboard de Leds! Para qualquer dúvida acesse o /tutorial, valeu!"
+            # Função para confirmar cadastro no e-mail
+            mensagem = (
+                "Você se registrou, e já está pronto para testar a Dashboard de Leds! "
+                "Para qualquer dúvida, acesse o /tutorial. Valeu!"
+            )
             from apimsg import enviar_email
             enviar_email(email, mensagem)
             
-            flash("Registrado com sucesso!", "success")
+            flash("Registrado com sucesso! Verifique seu e-mail para mais informações.", "success")
             return redirect(url_for('login'))
         except Exception as e:
             logging.error(f"Erro ao registrar usuário {email}: {e}")
@@ -161,10 +179,8 @@ def login():
         if user and bcrypt.check_password_hash(user[2], password):
             user_obj = User(user[0], user[1], user[3], user[4], user[5], user[6])
             login_user(user_obj)
-            # Log das informações do usuário
             logging.info(f"Usuário autenticado: {email}")
-            logging.debug(f"Broker: {user[3]}, Username: {user[4]}, Password: {user[5]}, Port: {user[6]}")
-            flash("login realizado com sucesso!")
+            flash("Login realizado com sucesso!")
             return redirect(url_for('dashboard'))
         else:
             logging.warning(f"Tentativa de login falhou para o email: {email}")
@@ -182,16 +198,11 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    global mqtt_client
-    if not mqtt_client._initialized:
-        mqtt_client.tls_set()  # Configura conexão segura
-        mqtt_client.tls_insecure_set(True)  # Ignora a validação de certificado
-        mqtt_client.username_pw_set(current_user.username, current_user.password)
-        mqtt_client.connect(current_user.broker, int(current_user.port))
-        mqtt_client.username_pw_set(current_user.username, current_user.password)
-        mqtt_client.loop_start()
-        mqtt_client._initialized = True
-        logging.info(f"Cliente MQTT inicializado para o usuário: {current_user.email}")
+    try:
+        configurar_mqtt()
+    except Exception:
+        flash("Erro ao conectar ao broker MQTT. Verifique as configurações.", "danger")
+        return redirect(url_for('inicio'))
     return render_template('dashboard.html', broker=current_user.broker)
 
 @app.route('/update_led', methods=['POST'])
@@ -206,7 +217,6 @@ def update_led():
     mqtt_payload = json.dumps(led_status)
     mqtt_client.publish(TOPIC_COMMAND, mqtt_payload)
     logging.debug(f"Mensagem publicada no tópico {TOPIC_COMMAND}: {mqtt_payload}")
-    logging.debug(f"Mensagem enviada para o broker: {mqtt_payload}")
     return jsonify({"status": "OK", "led_status": led_status}), 200
 
 @app.route('/led_status', methods=['GET'])
