@@ -135,6 +135,23 @@ def register():
             flash("Erro ao validar o e-mail. Tente novamente mais tarde.", "danger")
             return redirect(url_for('register'))
 
+        # Verificação do broker MQTT
+        def verify_broker():
+            client = mqtt.Client()
+            mqtt_client._initialized = False
+            client.username_pw_set(mqtt_user, mqtt_password)
+            try:
+                client.connect(broker, mqtt_port, 10)
+                client.disconnect()
+                return True
+            except Exception as e:
+                logging.error(f"Erro ao conectar ao broker MQTT: {e}")
+                return False
+
+        if not verify_broker():
+            flash("Verfique as credenciais do broker, não foi possível se conectar!.", "danger")
+            return redirect(url_for('register'))
+
         # Hash da senha
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
